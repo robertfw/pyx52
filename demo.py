@@ -188,6 +188,78 @@ while not any(True for e in pygame.event.get() if e.type == pygame.QUIT):
 
         textPrint.unindent()
 
+        # draw toggle buttons
+        cx = 1200
+        cy = 575
+        width = 50
+        height = 10
+        margin = 10
+
+        top_row_top = cy - margin - height
+        bottom_row_top = cy + margin
+
+        toggle_buttons = (
+            (8, (cx - width * 1.5 - margin, top_row_top, width, height)),
+            (9, (cx - width * 1.5 - margin, bottom_row_top, width, height)),
+            (10, (cx - width / 2, top_row_top, width, height)),
+            (11, (cx - width / 2, bottom_row_top, width, height)),
+            (12, (cx + width / 2 + margin, top_row_top, width, height)),
+            (13, (cx + width / 2 + margin, bottom_row_top, width, height)),
+        )
+
+        for btn_num, rect in toggle_buttons:
+            pygame.draw.rect(screen, BLUE, rect, 0 if joystick.get_button(btn_num) else 2)
+
+        # draw mode selector
+        height = 10
+        width = 30
+        margin = 10
+        x = 1300 - width / 2
+        y = 190 - (height + margin) * 3
+        modes = (
+            (23, (0, 255, 0)),
+            (24, (255, 127, 0)),
+            (25, (255, 0, 0))
+        )
+
+        for btn_num, colour in modes:
+            rect = (x,
+                    y,
+                    width,
+                    height)
+
+            pygame.draw.rect(screen, colour, rect, 0 if joystick.get_button(btn_num) else 1)
+
+            y += height + margin
+
+
+
+        # draw polygon buttons
+        polys = (
+            (0,  # trigger 1
+             ((1200, 400),
+              (1170, 440),
+              (1200, 450))),
+            (14,  # trigger 2
+             ((1200, 400),
+              (1230, 450),
+              (1200, 460))),
+            (5,  # clutch
+             ((1230, 500),
+              (1230, 530),
+              (1170, 530),
+              (1220, 520))),
+            (4,  # C
+             ((1080, 270),
+              (1110, 270),
+              (1135, 320),
+              (1120, 350)))
+        )
+
+        for btn_num, points in polys:
+            width = 0 if joystick.get_button(btn_num) else 2
+            pygame.draw.polygon(screen, BLUE, points, width)
+
         # draw the circular buttons
         SMALL = 10
         MEDIUM = 15
@@ -206,6 +278,7 @@ while not any(True for e in pygame.event.get() if e.type == pygame.QUIT):
             width = 0 if joystick.get_button(btn_num) else 2
             pygame.draw.circle(screen, BLUE, pos, radius, width)
 
+        # draw the hats
         hats = (
             ('btns', (15, 16, 17, 18), (1100, 200)),
             ('btns', (19, 20, 21, 22), (500, 200)),
@@ -262,8 +335,6 @@ while not any(True for e in pygame.event.get() if e.type == pygame.QUIT):
 
             for rect, border_width in hats:
                 pygame.draw.rect(screen, BLUE, rect, border_width)
-
-
 
     # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
     # Go ahead and update the screen with what we've drawn.
