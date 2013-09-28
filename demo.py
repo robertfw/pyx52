@@ -3,7 +3,11 @@ import pygame
 # Define some colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+
 BLUE = (0, 0, 255)
+GREEN = (0, 255, 0)
+ORANGE = (255, 127, 0)
+RED = (255, 0, 0)
 
 # Define the X52 labels
 LABELS = {
@@ -108,6 +112,20 @@ class TextPrint(object):
         self.x -= 10
 
 
+def draw_vertical_axis(pos, left, top, length, width=26):
+    mid = top + (length / 2)
+
+    if pos > 0:
+        boxtop = mid + round((length / 2) * pos)
+    elif pos < 0:
+        boxtop = mid - round((length / 2) * abs(pos))
+    else:
+        boxtop = mid
+
+    pygame.draw.rect(screen, RED, (left, boxtop - (width / 2), width, width), 0)
+    pygame.draw.rect(screen, BLUE, (left, top - (width / 2), width, length + width), 2)
+
+
 pygame.init()
 
 # Set the width and height of the screen [width,height]
@@ -188,6 +206,9 @@ while not any(True for e in pygame.event.get() if e.type == pygame.QUIT):
 
         textPrint.unindent()
 
+        # draw throttle axis
+        draw_vertical_axis(joystick.get_axis(2), 300, 100, 400)
+
         # draw toggle buttons
         cx = 1200
         cy = 575
@@ -217,9 +238,9 @@ while not any(True for e in pygame.event.get() if e.type == pygame.QUIT):
         x = 1300 - width / 2
         y = 190 - (height + margin) * 3
         modes = (
-            (23, (0, 255, 0)),
-            (24, (255, 127, 0)),
-            (25, (255, 0, 0))
+            (23, GREEN),
+            (24, ORANGE),
+            (25, RED)
         )
 
         for btn_num, colour in modes:
@@ -231,8 +252,6 @@ while not any(True for e in pygame.event.get() if e.type == pygame.QUIT):
             pygame.draw.rect(screen, colour, rect, 0 if joystick.get_button(btn_num) else 1)
 
             y += height + margin
-
-
 
         # draw polygon buttons
         polys = (
@@ -269,9 +288,9 @@ while not any(True for e in pygame.event.get() if e.type == pygame.QUIT):
             (1, SMALL, (1200, 200)),    # fire
             (2, SMALL, (1300, 200)),    # a
             (3, SMALL, (1300, 300)),    # b
-            (7, LARGE, (600, 200)),    # E
-            (6, SMALL, (600, 300)),    # D
-            (29, MEDIUM, (600, 400)),  # info
+            (7, LARGE, (600, 200)),     # E
+            (6, SMALL, (600, 300)),     # D
+            (29, MEDIUM, (600, 400)),   # info
         )
 
         for btn_num, radius, pos in circle_buttons:
